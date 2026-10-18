@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting Started with Abacus AI Agent — A Practical Guide</title>
+<style>
+  :root{
+    --ink:#12161c;
+    --ink-soft:#4a5462;
+    --line:#e3e7ee;
+    --bg:#ffffff;
+    --bg-soft:#f6f8fb;
+    --accent:#2f6df6;
+    --accent-soft:#eaf1ff;
+    --code-bg:#0f172a;
+    --code-ink:#e6edf7;
+    --radius:14px;
+    --maxw:860px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg-soft);
+    color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- layout ---------- */
+  .shell{display:flex;align-items:flex-start;max-width:1220px;margin:0 auto;gap:32px;padding:0 24px}
+
+  nav.toc{
+    position:sticky;top:0;align-self:flex-start;
+    width:246px;flex:0 0 246px;
+    max-height:100vh;overflow-y:auto;
+    padding:34px 8px 40px 0;
+    font-size:13.5px;
+  }
+  nav.toc h2{
+    font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-soft);margin:0 0 12px;font-weight:700;
+  }
+  nav.toc a{
+    display:block;color:var(--ink-soft);text-decoration:none;
+    padding:5px 10px;border-left:2px solid var(--line);
+    line-height:1.4;
+  }
+  nav.toc a:hover{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+  nav.toc a.sub{padding-left:22px;font-size:12.5px}
+
+  main{flex:1 1 auto;min-width:0;max-width:var(--maxw);padding:34px 0 90px}
+
+  /* ---------- header ---------- */
+  header.hero{
+    background:linear-gradient(150deg,#101a2e 0%,#1b2f57 55%,#2f6df6 100%);
+    color:#fff;border-radius:20px;padding:40px 36px;margin-bottom:34px;
+    box-shadow:0 12px 34px rgba(20,32,58,.22);
+  }
+  header.hero .kicker{
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:#b9cdfb;font-weight:700;margin:0 0 12px;
+  }
+  header.hero h1{font-size:33px;line-height:1.2;margin:0 0 14px;letter-spacing:-.02em}
+  header.hero p{margin:0;color:#dbe5f8;font-size:16.5px;max-width:60ch}
+  header.hero .meta{margin-top:22px;font-size:13px;color:#a9bee8}
+
+  /* ---------- sections ---------- */
+  section{
+    background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px 30px;margin-bottom:20px;scroll-margin-top:20px;
+  }
+  section > h2{
+    font-size:22px;margin:0 0 6px;letter-spacing:-.01em;display:flex;align-items:center;gap:12px;
+  }
+  .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;flex:0 0 28px;border-radius:9px;
+    background:var(--accent);color:#fff;font-size:14px;font-weight:700;
+  }
+  section > h2 + .lede{color:var(--ink-soft);margin:0 0 20px;font-size:15.5px}
+  h3{font-size:16.5px;margin:26px 0 8px;letter-spacing:-.005em}
+  h4{font-size:14px;margin:20px 0 6px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:0 0 12px}
+  ul,ol{margin:0 0 14px;padding-left:22px}
+  li{margin:0 0 6px}
+  li::marker{color:var(--accent)}
+  strong{font-weight:650}
+  a{color:var(--accent)}
+
+  /* ---------- blocks ---------- */
+  .callout{
+    border-left:3px solid var(--accent);background:var(--accent-soft);
+    border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:14.5px;
+  }
+  .callout.warn{border-left-color:#e0a012;background:#fff8e8}
+  .callout.tip{border-left-color:#12a06a;background:#eafaf3}
+  .callout p:last-child{margin-bottom:0}
+  .callout .label{font-weight:700;display:block;margin-bottom:3px;font-size:13px;letter-spacing:.02em}
+
+  pre{
+    background:var(--code-bg);color:var(--code-ink);border-radius:10px;
+    padding:16px 18px;overflow-x:auto;font-size:13.5px;line-height:1.6;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:12px 0 18px;
+  }
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+  p code,li code,td code{background:#eef2f8;padding:1.5px 6px;border-radius:5px;color:#243b63}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:14.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft);background:var(--bg-soft)}
+  tr:last-child td{border-bottom:none}
+
+  /* ---------- steps ---------- */
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+  .steps > li{
+    counter-increment:s;position:relative;padding:0 0 20px 44px;margin:0;
+    border-left:2px solid var(--line);
+  }
+  .steps > li:last-child{border-left-color:transparent;padding-bottom:0}
+  .steps > li::before{
+    content:counter(s);position:absolute;left:-15px;top:0;
+    width:28px;height:28px;border-radius:50%;background:#fff;
+    border:2px solid var(--accent);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;
+  }
+  .steps > li > strong{display:block;margin-bottom:4px;font-size:15.5px}
+  .steps p:last-child{margin-bottom:0}
+
+  /* ---------- cards ---------- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .card{
+    border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-soft);
+  }
+  .card h4{margin:0 0 6px;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink)}
+  .card p{margin:0;font-size:14px;color:var(--ink-soft)}
+  .card .tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:20px;margin-bottom:8px;
+  }
+
+  /* ---------- checklist ---------- */
+  ul.check{list-style:none;padding:0}
+  ul.check li{position:relative;padding-left:30px}
+
+  /* ---------- footer ---------- */
+  footer{
+    max-width:var(--maxw);color:var(--ink-soft);font-size:13px;
+    padding:26px 0 0;border-top:1px solid var(--line);
+  }
+
+  /* ---------- responsive ---------- */
+  /* ---------- scroll progress ---------- */
+  #progress{
+    position:fixed;top:0;left:0;height:3px;width:0;z-index:100;
+    background:linear-gradient(90deg,#2f6df6,#6ea8ff,#12a06a);
+    transition:width .1s linear;
+    box-shadow:0 0 10px rgba(47,109,246,.55);
+  }
+
+  /* ---------- hero extras ---------- */
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+  .btn{
+    appearance:none;border:1px solid rgba(255,255,255,.28);cursor:pointer;
+    border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;
+    font-family:inherit;transition:transform .15s ease,background .15s ease,box-shadow .15s ease;
+  }
+  .btn.primary{background:#fff;color:#152a52;border-color:#fff}
+  .btn.ghost{background:rgba(255,255,255,.08);color:#fff}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .btn.ghost:hover{background:rgba(255,255,255,.18)}
+  .btn:active{transform:translateY(0)}
+  .cursor{
+    display:inline-block;width:2px;height:.95em;background:#9dc0ff;
+    vertical-align:-.08em;margin-left:2px;animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .cursor{animation:none}
+    html{scroll-behavior:auto}
+  }
+
+  /* ---------- active TOC ---------- */
+  nav.toc a.active{
+    color:var(--accent);border-left-color:var(--accent);
+    background:var(--accent-soft);font-weight:650;
+  }
+
+  /* ---------- checklist progress ---------- */
+  .check-progress{
+    position:sticky;top:0;z-index:5;
+    display:flex;align-items:center;gap:14px;margin:0 0 22px;
+    padding:12px 14px;border:1px solid var(--line);border-radius:12px;
+    background:var(--bg-soft);font-size:13.5px;
+  }
+  .check-progress .bar{
+    flex:1 1 auto;height:8px;border-radius:20px;background:#dfe6f0;overflow:hidden;
+  }
+  .check-progress .bar span{
+    display:block;height:100%;width:0;border-radius:20px;
+    background:linear-gradient(90deg,#2f6df6,#12a06a);
+    transition:width .35s cubic-bezier(.4,0,.2,1);
+  }
+  .check-progress .pct{
+    font-weight:700;color:var(--accent);min-width:42px;text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  ul.check li label{
+    display:block;cursor:pointer;position:relative;padding-left:30px;
+    transition:color .2s ease;
+  }
+  ul.check li label::before{
+    content:"";position:absolute;left:0;top:4px;width:16px;height:16px;
+    border:2px solid #c4cddb;border-radius:5px;
+    transition:background .18s ease,border-color .18s ease,transform .18s ease;
+  }
+  ul.check li label:hover::before{border-color:var(--accent)}
+  ul.check li label input{position:absolute;opacity:0;width:0;height:0}
+  ul.check li label::after{
+    content:"";position:absolute;left:5px;top:8px;
+    width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;
+    transform:rotate(45deg) scale(0);transition:transform .18s ease;
+  }
+  ul.check li label input:checked ~ .txt{color:#9aa5b4;text-decoration:line-through}
+  ul.check li label input:checked::before{}
+  ul.check li label:has(input:checked)::before{background:var(--accent);border-color:var(--accent)}
+  ul.check li label:has(input:checked)::after{transform:rotate(45deg) scale(1)}
+  ul.check li label input:checked + .txt{}
+  /* Safari/older-browser fallback (no :has support) via JS-set class */
+  ul.check li label.done::before{background:var(--accent);border-color:var(--accent)}
+  ul.check li label.done::after{transform:rotate(45deg) scale(1)}
+  ul.check li label.done .txt{color:#9aa5b4;text-decoration:line-through}
+  ul.check li label input:focus-visible + .txt{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+  /* ---------- flip cards ---------- */
+  .cards.flip .card{
+    cursor:pointer;position:relative;min-height:150px;
+    display:flex;flex-direction:column;justify-content:flex-start;
+    transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,border-color .3s ease;
+  }
+  .cards.flip .card:hover{transform:translateY(-4px);box-shadow:0 10px 26px rgba(23,40,74,.10);border-color:#c9d8f6}
+  .cards.flip .card .flip-hint{
+    position:absolute;right:14px;bottom:10px;font-size:11px;color:#9aa5b4;
+    letter-spacing:.04em;transition:opacity .25s ease;
+  }
+  .cards.flip .card.open .flip-hint{opacity:0}
+  .cards.flip .card .reveal-body{
+    display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.4,0,.2,1),opacity .3s ease;
+    opacity:0;margin-top:0;
+  }
+  .cards.flip .card.open .reveal-body{grid-template-rows:1fr;opacity:1;margin-top:8px}
+  .cards.flip .card .reveal-body > div{overflow:hidden}
+  .cards.flip .card .reveal-body p{
+    margin:0;font-size:13.5px;color:var(--ink-soft);
+    border-top:1px dashed var(--line);padding-top:8px;
+  }
+  .cards.flip .card.open{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ---------- anatomy builder ---------- */
+  .builder{
+    border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+    background:var(--bg-soft);margin:16px 0 20px;
+  }
+  .builder-items{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+  .chipset{
+    appearance:none;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+    border:1px solid #cfd8e6;background:#fff;color:var(--ink-soft);
+    padding:7px 14px;border-radius:20px;
+    transition:all .2s ease;
+  }
+  .chipset:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .chipset[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(47,109,246,.28)}
+  .builder-out{
+    background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;font-size:14.5px;line-height:1.6;min-height:96px;
+  }
+  .builder-out .miss{color:#b9c2ce}
+  .builder-out em.fill{font-style:normal;background:var(--accent-soft);color:#1c3f8f;
+    padding:1px 6px;border-radius:5px;animation:pop .35s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+  .builder-score{
+    margin-top:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .builder-score .meter{height:7px;flex:1 1 120px;max-width:220px;border-radius:20px;background:#dfe6f0;overflow:hidden}
+  .builder-score .meter span{display:block;height:100%;width:0;border-radius:20px;
+    background:linear-gradient(90deg,#e0a012,#12a06a);transition:width .35s ease}
+
+  /* ---------- terminal card ---------- */
+  .term-card{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .term-head{
+    background:#0f172a;color:#c8d6ec;font-size:12.5px;padding:9px 14px;
+    display:flex;align-items:center;gap:9px;letter-spacing:.02em;
+  }
+  .term-head .dot{width:10px;height:10px;border-radius:50%}
+  .term-head .dot:nth-child(1){background:#ff5f57}
+  .term-head .dot:nth-child(2){background:#febc2e}
+  .term-head .dot:nth-child(3){background:#28c840}
+  .term-head span.file{margin-left:auto;color:#7d90ab;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+
+  /* ---------- back to top ---------- */
+  #toTop{
+    position:fixed;right:22px;bottom:22px;z-index:90;
+    width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--accent);color:#fff;font-size:19px;line-height:1;
+    box-shadow:0 8px 22px rgba(47,109,246,.42);
+    opacity:0;pointer-events:none;transform:translateY(10px) scale(.9);
+    transition:opacity .25s ease,transform .25s ease,background .2s ease;
+  }
+  #toTop.show{opacity:1;pointer-events:auto;transform:none}
+  #toTop:hover{background:#1c55d6;transform:translateY(-2px)}
+
+  /* ---------- confetti canvas ---------- */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+
+  @media (max-width:1000px){
+    .shell{display:block;padding:0 18px}
+    nav.toc{
+      position:static;width:auto;max-height:none;padding:22px 0 6px;
+      border-bottom:1px solid var(--line);margin-bottom:22px;
+    }
+    nav.toc a{border-left:none;border-radius:8px;padding:6px 10px}
+    nav.toc a.sub{padding-left:20px}
+    main{max-width:none;padding-top:0}
+    .cards{grid-template-columns:1fr}
+    header.hero{padding:30px 22px}
+    header.hero h1{font-size:26px}
+    section{padding:22px 20px}
+  }
+  @media print{
+    nav.toc{display:none}
+    #progress,#toTop,#confetti,.hero-cta,.flip-hint{display:none!important}
+    .reveal{opacity:1!important;transform:none!important}
+    body{background:#fff}
+    .shell{display:block;padding:0}
+    section{break-inside:avoid;box-shadow:none}
+    header.hero{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="shell">
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <a href="#mental-model">1. The mental model</a>
+  <a href="#setup">2. First-time setup</a>
+  <a href="#anatomy">3. Anatomy of a good request</a>
+  <a href="#walkthrough">4. First project, step by step</a>
+  <a href="#connectors">5. Connectors</a>
+  <a href="#routines">6. Routines &amp; automation</a>
+  <a href="#skills">7. Skills</a>
+  <a href="#artifacts">8. Documents, decks, designs</a>
+  <a href="#coding">9. Working with code</a>
+  <a href="#credits">10. Credits &amp; plans</a>
+  <a href="#troubleshooting">11. Troubleshooting</a>
+  <a href="#checklist">12. Launch checklist</a>
+</nav>
+
+<main>
+
+<header class="hero">
+  <p class="kicker">Practical guide</p>
+  <h1>Getting started with <span id="typed" data-text="Abacus AI Agent"></span><span class="cursor"></span></h1>
+  <p>A structured path from "I just signed up" to running real, recurring work. Work through it in order the first time; afterwards use it as a reference.</p>
+  <div class="hero-cta">
+    <button class="btn primary" data-goto="#setup">Start at step 1 →</button>
+    <button class="btn ghost" data-goto="#checklist">Jump to the checklist</button>
+    <button class="btn ghost" id="printBtn">Save as PDF</button>
+  </div>
+  <p class="meta">Read time: about 15 minutes · No prior agent experience assumed</p>
+</header>
+
+<!-- ============ 1 ============ -->
+<section id="mental-model" class="reveal">
+  <h2><span class="num">1</span>The mental model</h2>
+  <p class="lede">Five ideas explain almost everything the agent does. Read these once and the rest of the guide becomes obvious.</p>
+
+  <div class="cards flip">
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 1</span>
+      <h4>It's a conversation, not a form</h4>
+      <p>You describe an outcome in plain language. It plans, uses tools, and reports back. No syntax to learn, no configuration screens to hunt through.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> there is no settings maze to memorise. If you can describe the job to a colleague, you can describe it here.</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 2</span>
+      <h4>Tools are how it acts</h4>
+      <p>Reading and writing files, running commands, searching the web, opening a browser, sending email. If it lacks a tool for something, it will tell you rather than pretend.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> when something fails, ask "which tool did you try?" — the answer tells you instantly whether the fix is a connector, a file path, or a simpler request.</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 3</span>
+      <h4>Connectors link your accounts</h4>
+      <p>Gmail, Google Calendar, Drive, Slack, Notion, Jira and many more. Connecting one lets the agent work inside that service as you.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> connect on demand, not in advance. The moment a real task needs your calendar is the moment to connect it.</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 4</span>
+      <h4>Routines run without you</h4>
+      <p>A saved prompt on a schedule or a webhook. This is what turns a one-off task into something that happens every morning on its own.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> anything you'd put in a calendar reminder is a routine candidate. The bar is "I do this weekly and it's boring".</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 5</span>
+      <h4>Outputs are files you can keep</h4>
+      <p>Reports, PDFs, slide decks, spreadsheets, mockups and small web apps. They land in your workspace and stay there.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> always check that the file was handed over, not just created. Ask "show me the file" if the preview stays empty.</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <span class="tag">Idea 6</span>
+      <h4>Credits meter the work</h4>
+      <p>Every action spends a little. Big jobs cost more than small ones. Watching your balance is how you avoid surprises.</p>
+      <div class="reveal-body"><div><p><strong>In practice:</strong> a plan first is cheap; a wrong run is expensive. That single habit is most of credit discipline.</p></div></div>
+      <span class="flip-hint">click for more →</span>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">The single most useful habit</span>
+    <p>Ask for an outcome, not a procedure. "Summarise what changed in this folder since Monday" beats "list the files, then read them, then...". The agent chooses the steps; you own the goal.</p>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="setup" class="reveal">
+  <h2><span class="num">2</span>First-time setup</h2>
+  <p class="lede">Fifteen minutes of groundwork that pays off in every session afterwards.</p>
+
+  <ol class="steps">
+    <li>
+      <strong>Know where your workspace is</strong>
+      <p>Everything the agent creates lives in a working folder on your machine. When it says it saved a file, that's where to look. The chat shows a clickable link whenever it produces something.</p>
+    </li>
+    <li>
+      <strong>Connect the accounts you actually use</strong>
+      <p>Start with one or two, not ten. Gmail and Google Calendar cover a huge amount of daily work. You can connect more later without any penalty — see <a href="#connectors">section 5</a>.</p>
+    </li>
+    <li>
+      <strong>Check your credit balance</strong>
+      <p>Ask the agent directly: <em>"How many credits do I have left this month?"</em> It reads the live number rather than guessing. Knowing your starting point makes later usage meaningful.</p>
+    </li>
+    <li>
+      <strong>Decide your first real use case</strong>
+      <p>Pick something you genuinely do every week and dislike. A status report. Sorting an inbox. Turning meeting notes into action items. A real task teaches you more than a demo.</p>
+    </li>
+    <li>
+      <strong>Run one throwaway test</strong>
+      <p>Ask it to write a text file with three bullet points about your week. Confirm you can open the result. That closes the loop on the whole file-and-tool cycle in under a minute.</p>
+    </li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">Worth knowing early</span>
+    <p>The agent can read and write files and run commands on this machine. Treat it like a capable new colleague with access to your desk: fine for most things, but don't hand it anything you wouldn't hand a stranger, and don't paste secrets into a prompt unless you're comfortable with them being used.</p>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="anatomy" class="reveal">
+  <h2><span class="num">3</span>Anatomy of a good request</h2>
+  <p class="lede">Most disappointing results come from a request missing one of five ingredients. Include all five and quality jumps immediately.</p>
+
+  <table>
+    <thead>
+      <tr><th>Ingredient</th><th>What it answers</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Goal</strong></td>
+        <td>What finished looks like</td>
+        <td>"A one-page summary I can send to my manager"</td>
+      </tr>
+      <tr>
+        <td><strong>Sources</strong></td>
+        <td>Where the material is</td>
+        <td>"From the last 30 days of email in this thread"</td>
+      </tr>
+      <tr>
+        <td><strong>Constraints</strong></td>
+        <td>Limits and rules</td>
+        <td>"Under 400 words, no jargon, bullet points"</td>
+      </tr>
+      <tr>
+        <td><strong>Format</strong></td>
+        <td>The shape of the output</td>
+        <td>"A PDF" / "a spreadsheet" / "a slide deck"</td>
+      </tr>
+      <tr>
+        <td><strong>Audience</strong></td>
+        <td>Who reads it</td>
+        <td>"For a non-technical executive"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Before and after</h3>
+
+  <h4>Weak</h4>
+  <div class="term-card">
+    <div class="term-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="file">prompt.txt</span></div>
+    <pre>Summarise my emails.</pre>
+  </div>
+
+  <h4>Strong</h4>
+  <div class="term-card">
+    <div class="term-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="file">prompt.txt</span></div>
+    <pre>Read the email threads I've been part of over the last 14 days.
+Group them by project and tell me which ones are waiting on a reply from me.
+Put the result in a short PDF — one page, bullets, newest first —
+that I can skim in two minutes before a planning meeting.</pre>
+  </div>
+
+  <p>The strong version names a window, a grouping, a decision it must help you make, a format and a time budget. Nothing in it is technical.</p>
+
+  <h3>Try it: build a request</h3>
+  <p>Toggle the ingredients below and watch the request assemble itself. Notice how thin it looks with only one or two switched on — that thinness is what a vague prompt feels like from the agent's side.</p>
+
+  <div class="builder">
+    <div class="builder-items" id="builderChips"></div>
+    <div class="builder-out" id="builderOut"></div>
+    <div class="builder-score">
+      <span id="builderScore">0 of 5 ingredients — very vague</span>
+      <span class="meter"><span id="builderMeter"></span></span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="label">Iterate instead of restarting</span>
+    <p>If the first attempt is 70% right, say what to change: <em>"Keep the structure, drop the second section, and make the tone more direct."</em> Refining is far cheaper than starting over, and the agent keeps its context.</p>
+  </div>
+
+  <h3>Phrases that reliably improve output</h3>
+  <ul>
+    <li><em>"Ask me before you start if anything is ambiguous."</em> — prevents a long wrong run.</li>
+    <li><em>"Show me your plan first."</em> — cheap checkpoint before expensive work.</li>
+    <li><em>"Cite which file or message each claim comes from."</em> — makes it verifiable.</li>
+    <li><em>"If you can't find X, say so rather than guessing."</em> — kills invented detail.</li>
+    <li><em>"Keep this as a reusable routine."</em> — turns a good result into automation.</li>
+  </ul>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="walkthrough" class="reveal">
+  <h2><span class="num">4</span>First project, step by step</h2>
+  <p class="lede">A complete worked example. Adapt the subject matter to your own work; the shape stays the same.</p>
+
+  <p><strong>The scenario:</strong> every Monday you spend half an hour assembling a status update from scattered notes and messages.</p>
+
+  <ol class="steps">
+    <li>
+      <strong>State the outcome, not the steps</strong>
+      <p>"I need a weekly status update I can send every Monday morning. Here's last week's version so you can match the structure." Point it at a real file — matching an existing example is the fastest way to get the format you want.</p>
+    </li>
+    <li>
+      <strong>Give it the raw material</strong>
+      <p>Either name the sources ("the notes folder in my Drive", "the #project channel in Slack") or paste the content. If it's a connected service, it fetches it itself; if not, paste it.</p>
+    </li>
+    <li>
+      <strong>Let it draft, then correct</strong>
+      <p>First pass will be close but not perfect. Give two or three concrete corrections — "shorter intro", "call out the blocked items first". Two rounds is usually enough.</p>
+    </li>
+    <li>
+      <strong>Lock the format</strong>
+      <p>Once it's right, say: "This structure is now the template. Always use it." Future runs inherit the shape without re-explaining.</p>
+    </li>
+    <li>
+      <strong>Turn it into a routine</strong>
+      <p>"Every Monday at 8am, produce this update and leave it in the workspace." Now the task is off your plate permanently — see <a href="#routines">section 6</a>.</p>
+    </li>
+  </ol>
+
+  <div class="callout tip">
+    <span class="label">The pattern to remember</span>
+    <p><strong>Do it once by hand → correct it → freeze the format → schedule it.</strong> Almost every useful automation you build will follow exactly these four beats.</p>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="connectors" class="reveal">
+  <h2><span class="num">5</span>Connectors</h2>
+  <p class="lede">Connectors are how the agent reaches into the services you already use. Without them it works on files; with them it works on your actual accounts.</p>
+
+  <h3>What's available</h3>
+  <p>Account connectors include Gmail, Google Drive, Google Calendar, Slack, Outlook, OneDrive, Jira, Confluence, Dropbox, X, GitHub, Figma, Zoom, DocuSign and Google Cloud. There are also chat apps (WhatsApp, Telegram, Discord) and tool servers such as Notion, Canva, Stripe, PayPal, Zapier and Hugging Face.</p>
+
+  <h3>How to connect one</h3>
+  <ol>
+    <li>Just ask. Say "connect Gmail" or "I need to search my Drive".</li>
+    <li>A Connect button appears in the chat. Click it.</li>
+    <li>You sign in on the provider's own page — the agent never sees your password.</li>
+    <li>Once connected, that service's abilities appear in the agent's toolset and it starts using them when relevant.</li>
+  </ol>
+  <p>One Google sign-in covers Gmail, Drive and Calendar together.</p>
+
+  <h3>Choosing what to connect</h3>
+  <table>
+    <thead><tr><th>Connect this</th><th>If you want to…</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Gmail</strong></td><td>Triage, search, draft and send mail; find threads and attachments.</td></tr>
+      <tr><td><strong>Google Calendar</strong></td><td>Check availability, summarise your week, prepare for meetings.</td></tr>
+      <tr><td><strong>Google Drive</strong></td><td>Read and create documents, sheets and files in your own storage.</td></tr>
+      <tr><td><strong>Slack</strong></td><td>Read channels, catch up on what you missed, send messages.</td></tr>
+      <tr><td><strong>Notion</strong></td><td>Turn pages into structured notes, reports or databases.</td></tr>
+      <tr><td><strong>GitHub</strong></td><td>Work with repos, pull requests and issues.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <span class="label">Least privilege, practically</span>
+    <p>Connect services one at a time, as a real task needs them. A connector you never use is access you never needed. You can disconnect any of them at any time just by asking.</p>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="routines" class="reveal">
+  <h2><span class="num">6</span>Routines &amp; automation</h2>
+  <p class="lede">The step from "useful assistant" to "runs my recurring work". A routine is a saved prompt that fires on its own.</p>
+
+  <h3>Two ways to trigger one</h3>
+  <table>
+    <thead><tr><th>Trigger</th><th>Use it for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Schedule</strong></td><td>Anything on a clock: a Monday briefing, a nightly tidy-up, a monthly report. Standard cron syntax, in your local time.</td></tr>
+      <tr><td><strong>Webhook</strong></td><td>Anything event-driven: an outside system posts to a URL you've been given and the routine runs with that data.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Examples that earn their keep</h3>
+  <ul>
+    <li><strong>Weekday 8am</strong> — "Summarise unread email from the last 16 hours, flag anything needing a reply today, put it in the workspace."</li>
+    <li><strong>Friday 4pm</strong> — "Draft my weekly update from this week's notes and calendar."</li>
+    <li><strong>Monday 7am</strong> — "List this week's meetings with one line of preparation for each."</li>
+    <li><strong>Monthly</strong> — "Reconcile last month's expenses from these files and flag anything unusual."</li>
+  </ul>
+
+  <h3>Rules for writing a good routine prompt</h3>
+  <ol>
+    <li><strong>Make it standalone.</strong> It runs in a fresh session with no memory of your conversation. Every detail it needs must be in the prompt itself.</li>
+    <li><strong>Pin the output.</strong> Say where the result should go and what format it takes. "Leave it as a PDF in the reports folder."</li>
+    <li><strong>Make it safe to run when nothing changed.</strong> If there's no email, it should say "nothing to report" rather than inventing content.</li>
+    <li><strong>State the timezone.</strong> Routines use local time — confirm that matches your expectation.</li>
+    <li><strong>Expect a first run immediately.</strong> A new scheduled routine fires once straight away so you can see it work. That's normal.</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">Where routines live</span>
+    <p>Routines run on your computer, and only while it is on and the app is open — unless your plan provides always-on execution. If a routine must never miss, check your plan first.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Manage them by asking</span>
+    <p>"List my routines", "pause the Monday one", "change it to 7am", "delete that". No settings screen required.</p>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="skills" class="reveal">
+  <h2><span class="num">7</span>Skills</h2>
+  <p class="lede">Skills are reusable instruction packs that teach the agent how you want a specific kind of job done. They are how you stop repeating yourself across sessions.</p>
+
+  <h3>What a skill is</h3>
+  <p>A written procedure the agent loads when the task matches. Instead of re-explaining your house style every time, you write it down once and it applies from then on.</p>
+
+  <h3>When to make one</h3>
+  <ul>
+    <li>You've explained the same procedure three times.</li>
+    <li>You have a house style — a report format, a tone of voice, a naming convention.</li>
+    <li>There's a checklist your team must follow every time.</li>
+    <li>A review process with specific things to look for.</li>
+  </ul>
+
+  <h3>Two ways to get one</h3>
+  <ol>
+    <li><strong>Install a published one.</strong> Ask for a skill by what you want it to do — "I need a skill for reviewing pull requests" — and a matching one is found and installed for you.</li>
+    <li><strong>Write your own.</strong> Ask the agent to create a skill capturing the procedure you just walked through together. It writes the file; you refine the wording.</li>
+  </ol>
+
+  <div class="callout tip">
+    <span class="label">The compounding effect</span>
+    <p>Routines handle <em>when</em> work happens. Skills handle <em>how</em> it's done. Together they're what makes the agent feel like it actually knows your job rather than starting cold every morning.</p>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="artifacts" class="reveal">
+  <h2><span class="num">8</span>Documents, decks, designs</h2>
+  <p class="lede">When you need something presentable rather than a chat reply, ask for the finished artifact directly.</p>
+
+  <table>
+    <thead><tr><th>Ask for</th><th>You get</th><th>Good for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A document</strong></td><td>A formatted PDF</td><td>Reports, memos, briefings, proposals, write-ups</td></tr>
+      <tr><td><strong>A deck</strong></td><td>A designed PDF plus an editable PowerPoint</td><td>Pitches, reviews, teaching, announcements</td></tr>
+      <tr><td><strong>A design</strong></td><td>Mockups and wireframes as images</td><td>Product screens, app layouts, UI concepts</td></tr>
+      <tr><td><strong>A page</strong></td><td>A live web page you can open</td><td>Dashboards, guides, shareable references</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How to brief one well</h3>
+  <ol>
+    <li><strong>Say who it's for.</strong> "For a non-technical board" changes everything about the writing.</li>
+    <li><strong>Say what it must cover.</strong> List the sections or questions it has to answer. Content is your job; layout is handled for you.</li>
+    <li><strong>Say how long.</strong> "Six slides", "two pages", "four screens".</li>
+    <li><strong>Name your sources.</strong> Point at files or folders so it writes about the real material, not a generic version of it.</li>
+  </ol>
+
+  <div class="callout">
+    <span class="label">Don't over-specify the design</span>
+    <p>Asking for "a professional look" is enough. Prescribing fonts, colours and spacing usually makes the result worse, because the layout engine knows its own system better than a description can convey. Spend your words on content instead.</p>
+  </div>
+
+  <h3>Editing what you got</h3>
+  <p>Documents and decks keep an editable source next to the finished file. Ask for a change in plain language — "tighten the second page", "move the summary to the front" — and it regenerates rather than starting over. Existing PDFs can also be merged, split, rotated, watermarked and form-filled on request.</p>
+</section>
+
+<!-- ============ 9 ============ -->
+<section id="coding" class="reveal">
+  <h2><span class="num">9</span>Working with code</h2>
+  <p class="lede">If you write software, this is where the agent is strongest — but the working habits matter more than the raw capability.</p>
+
+  <h3>Habits that produce good results</h3>
+  <ol class="steps">
+    <li>
+      <strong>Point at the repository, not the problem in the abstract</strong>
+      <p>"In this repo, find why the login test is flaky" beats "how do I fix flaky tests". Real files beat hypotheticals.</p>
+    </li>
+    <li>
+      <strong>Ask for the plan before the change</strong>
+      <p>"Tell me what you'd change and why, before editing anything." A thirty-second review that catches an hour of wrong work.</p>
+    </li>
+    <li>
+      <strong>Insist on running the tests</strong>
+      <p>Any change worth making is worth verifying. "Make the change and run the test suite" — not just "make the change".</p>
+    </li>
+    <li>
+      <strong>Keep changes reviewable</strong>
+      <p>Small, focused changes you can read and approve. If a request would touch forty files, split it.</p>
+    </li>
+    <li>
+      <strong>Get a written review</strong>
+      <p>Ask for a review of a diff or pull request before merging. Correctness, security and clarity, with findings ranked by whether they actually matter.</p>
+    </li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="label">You are still the reviewer</span>
+    <p>Confident output is not the same as correct output. Read the diff. Check the tests genuinely cover the change. Treat generated code exactly as you'd treat a pull request from someone you don't know well yet.</p>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section id="credits" class="reveal">
+  <h2><span class="num">10</span>Credits &amp; plans</h2>
+  <p class="lede">Credits are the unit of work. Understanding the shape of the cost keeps usage predictable.</p>
+
+  <h3>What costs what</h3>
+  <ul>
+    <li><strong>Cheap:</strong> short questions, small edits, quick lookups.</li>
+    <li><strong>Moderate:</strong> reading many files, searching the web, drafting a document.</li>
+    <li><strong>Expensive:</strong> long multi-step investigations, large refactors, generating decks or designs, running a full test suite.</li>
+  </ul>
+
+  <h3>Keeping usage sane</h3>
+  <ul>
+    <li>Check your balance when you start a session and after anything big.</li>
+    <li>Ask for a plan first on large jobs — a wrong plan costs a fraction of wrong work.</li>
+    <li>Iterate on an existing result rather than regenerating from scratch.</li>
+    <li>Be specific up front; vague requests wander, and wandering spends credits.</li>
+  </ul>
+
+  <h3>Your current plan</h3>
+  <p>You're on the <strong>Free</strong> plan with <strong>1,997 of 2,000 credits</strong> remaining this period. Those are a one-time grant and do not renew.</p>
+
+  <p><strong>Basic — $7 for the first month</strong> (30% off the usual $10/mo), then $10/mo, 20,000 credits a month:</p>
+  <ul>
+    <li>Top models including GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna, Claude Sonnet 5.5, Claude Opus 5.5, Claude Fable 5.1, Gemini 3.8 Flash and Gemini 4 Argon</li>
+    <li>Build and deploy powerful apps on the web, including mobile apps: 3 projects a month</li>
+    <li>Image and video generation</li>
+    <li>Unlimited chatting with the bot (20,000 credits a month)</li>
+    <li>100+ connectors: Gmail, Google Calendar, Slack, Drive, Notion and more</li>
+    <li>Routines that run 24/7 in Abacus AI Agent on the web, even with your computer off</li>
+  </ul>
+  <p>https://apps.abacus.ai/bot/link/upgrade?r=RRdXDQASUS6mNXz_hBNU2jv9</p>
+
+  <p><strong>Pro — $20/mo</strong>, everything in Basic plus:</p>
+  <ul>
+    <li>Unrestricted Abacus AI Agent: no limit on tasks while you have credits</li>
+    <li>30,000 credits a month</li>
+    <li>The coding agent and CLI</li>
+    <li>SuperComputer: an always-on computer</li>
+  </ul>
+  <p>https://apps.abacus.ai/bot/link/upgrade?r=-3EHe1OyAZ7eOTVtLH7kJMja</p>
+
+  <div class="callout tip">
+    <span class="label">For a beginner</span>
+    <p>Basic is the natural first step: it removes the credit ceiling and — importantly for section 6 — adds routines that run on a schedule even when your computer is off. Pro is the step up if you want the coding agent and always-on execution.</p>
+  </div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section id="troubleshooting" class="reveal">
+  <h2><span class="num">11</span>Troubleshooting</h2>
+  <p class="lede">The problems that come up most often, and what actually fixes them.</p>
+
+  <table>
+    <thead><tr><th>Symptom</th><th>Usual cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Output is generic and useless</td>
+        <td>No sources, no audience, no format named</td>
+        <td>Add all five ingredients from <a href="#anatomy">section 3</a>. Point at real files.</td>
+      </tr>
+      <tr>
+        <td>It can't find your emails or files</td>
+        <td>The relevant connector isn't connected</td>
+        <td>Ask for it by name; a Connect button appears. See <a href="#connectors">section 5</a>.</td>
+      </tr>
+      <tr>
+        <td>A routine didn't run</td>
+        <td>Computer off or app closed</td>
+        <td>Check the routine is enabled, then check your plan for always-on execution.</td>
+      </tr>
+      <tr>
+        <td>It invented a fact or a file</td>
+        <td>It guessed instead of reporting a gap</td>
+        <td>Add "if you can't find X, say so rather than guessing". Ask it to cite sources.</td>
+      </tr>
+      <tr>
+        <td>It went off in the wrong direction</td>
+        <td>The request was ambiguous</td>
+        <td>Interrupt and correct. Ask for the plan first on the next attempt.</td>
+      </tr>
+      <tr>
+        <td>Credits drained fast</td>
+        <td>Long exploratory runs, repeated regeneration</td>
+        <td>Plan first, iterate instead of restarting, be specific. See <a href="#credits">section 10</a>.</td>
+      </tr>
+      <tr>
+        <td>Nothing appears in the preview</td>
+        <td>The file wasn't handed over</td>
+        <td>Ask it to show you the file. Producing a result and presenting it are separate steps.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="label">The universal escape hatch</span>
+    <p>When something is stuck: <em>"Stop. Tell me in plain language what you've tried and what's blocking you."</em> It works far more often than rephrasing the original request.</p>
+  </div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section id="checklist" class="reveal">
+  <h2><span class="num">12</span>Launch checklist</h2>
+  <p class="lede">Work down this list over your first week. Tick them off in order and you'll have a genuinely useful setup by Friday.</p>
+
+  <div class="check-progress">
+    <span id="checkLabel">0 of 16 done</span>
+    <span class="bar"><span id="checkBar"></span></span>
+    <span class="pct" id="checkPct">0%</span>
+    <button class="btn ghost" id="resetChecks" style="border-color:#cfd8e6;color:#4a5462;padding:5px 12px;font-size:12.5px">Reset</button>
+  </div>
+
+  <h3>Day one — get the basics working</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-check="d1a"><span class="txt">Find your workspace folder and open a file the agent created</span></label></li>
+    <li><label><input type="checkbox" data-check="d1b"><span class="txt">Connect Gmail and Google Calendar</span></label></li>
+    <li><label><input type="checkbox" data-check="d1c"><span class="txt">Check your credit balance</span></label></li>
+    <li><label><input type="checkbox" data-check="d1d"><span class="txt">Complete one real task end to end</span></label></li>
+  </ul>
+
+  <h3>Days two and three — build the habit</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-check="d2a"><span class="txt">Use the five-ingredient structure on every request</span></label></li>
+    <li><label><input type="checkbox" data-check="d2b"><span class="txt">Practise iterating rather than restarting</span></label></li>
+    <li><label><input type="checkbox" data-check="d2c"><span class="txt">Ask for a plan before any task larger than a few minutes</span></label></li>
+    <li><label><input type="checkbox" data-check="d2d"><span class="txt">Generate one document or deck you'd actually send to someone</span></label></li>
+  </ul>
+
+  <h3>Days four to seven — automate something</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-check="d3a"><span class="txt">Identify one recurring weekly chore</span></label></li>
+    <li><label><input type="checkbox" data-check="d3b"><span class="txt">Do it once manually and correct the result</span></label></li>
+    <li><label><input type="checkbox" data-check="d3c"><span class="txt">Freeze the format</span></label></li>
+    <li><label><input type="checkbox" data-check="d3d"><span class="txt">Turn it into a routine on a schedule</span></label></li>
+    <li><label><input type="checkbox" data-check="d3e"><span class="txt">Verify it ran, and that the output is where you expected</span></label></li>
+  </ul>
+
+  <h3>Ongoing</h3>
+  <ul class="check">
+    <li><label><input type="checkbox" data-check="d4a"><span class="txt">Capture any procedure you've explained three times as a skill</span></label></li>
+    <li><label><input type="checkbox" data-check="d4b"><span class="txt">Review routines monthly — delete the ones you ignore</span></label></li>
+    <li><label><input type="checkbox" data-check="d4c"><span class="txt">Disconnect connectors you've stopped using</span></label></li>
+  </ul>
+
+  <footer>
+    <p><strong>Getting started with Abacus AI Agent</strong> — a structured guide. Prices and credit figures reflect the account at the time of writing; everything else is durable practice.</p>
+  </footer>
+</section>
+
+</main>
+</div>
+
+<button id="toTop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- reading progress bar ---------- */
+  var bar = document.getElementById("progress");
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? (window.scrollY / h) * 100 : 0;
+    bar.style.width = p.toFixed(2) + "%";
+    document.getElementById("toTop").classList.toggle("show", window.scrollY > 600);
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  window.addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- back to top ---------- */
+  document.getElementById("toTop").addEventListener("click", function(){
+    window.scrollTo({top:0, behavior: reduce ? "auto" : "smooth"});
+  });
+
+  /* ---------- hero typewriter ---------- */
+  (function type(){
+    var el = document.getElementById("typed");
+    if(!el) return;
+    var text = el.getAttribute("data-text");
+    if(reduce){ el.textContent = text; return; }
+    var i = 0;
+    (function step(){
+      el.textContent = text.slice(0, ++i);
+      if(i < text.length) setTimeout(step, 55);
+    })();
+  })();
+
+  /* ---------- hero buttons ---------- */
+  document.querySelectorAll("[data-goto]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t = document.querySelector(b.getAttribute("data-goto"));
+      if(t) t.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
+    });
+  });
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+  /* ---------- scroll reveal ---------- */
+  var sections = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, {rootMargin:"0px 0px -12% 0px", threshold:0.05});
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add("in"); });
+  }
+
+  /* ---------- active section in TOC ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  var targets = links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+  if("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var idx = targets.indexOf(e.target);
+        if(idx < 0) return;
+        links.forEach(function(l){ l.classList.remove("active"); });
+        links[idx].classList.add("active");
+      });
+    }, {rootMargin:"-15% 0px -70% 0px"});
+    targets.forEach(function(t){ if(t) spy.observe(t); });
+  }
+
+  /* ---------- flip cards ---------- */
+  document.querySelectorAll(".cards.flip .card").forEach(function(card){
+    function toggle(){
+      var open = card.classList.toggle("open");
+      card.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    card.addEventListener("click", toggle);
+    card.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  /* ---------- request builder ---------- */
+  var ING = [
+    {id:"goal",  label:"Goal",        text:"Produce a weekly status update I can send to my manager."},
+    {id:"src",   label:"Sources",     text:"Use the notes in my workspace folder and last week's version as the template."},
+    {id:"con",   label:"Constraints", text:"Under 400 words, bullet points, no jargon, flag anything blocked."},
+    {id:"fmt",   label:"Format",      text:"One-page PDF, newest items first."},
+    {id:"aud",   label:"Audience",    text:"Written for a non-technical executive who skims it in two minutes."}
+  ];
+  var chosen = {};
+  var chips = document.getElementById("builderChips");
+  var out = document.getElementById("builderOut");
+  var scoreEl = document.getElementById("builderScore");
+  var meterEl = document.getElementById("builderMeter");
+
+  var VERDICTS = ["very vague","vague — the agent will guess","usable, but it will wander","close to good","good","strong — this is the target"];
+  var COLORS = ["#d9534f","#e0a012","#e0a012","#3f8ae0","#12a06a","#12a06a"];
+
+  ING.forEach(function(ing){
+    var b = document.createElement("button");
+    b.className = "chipset";
+    b.type = "button";
+    b.textContent = "+ " + ing.label;
+    b.setAttribute("aria-pressed","false");
+    b.addEventListener("click", function(){
+      chosen[ing.id] = !chosen[ing.id];
+      b.setAttribute("aria-pressed", chosen[ing.id] ? "true" : "false");
+      b.textContent = (chosen[ing.id] ? "− " : "+ ") + ing.label;
+      render();
+    });
+    chips.appendChild(b);
+  });
+
+  function render(){
+    var n = 0, html = "";
+    ING.forEach(function(ing){
+      if(chosen[ing.id]){
+        n++;
+        html += '<em class="fill">' + ing.text + "</em> ";
+      } else {
+        html += '<span class="miss">[' + ing.label.toLowerCase() + " missing]</span> ";
+      }
+    });
+    out.innerHTML = html || '<span class="miss">Nothing selected yet — pick an ingredient above.</span>';
+    scoreEl.textContent = n + " of 5 ingredients — " + VERDICTS[n];
+    scoreEl.style.color = COLORS[n];
+    meterEl.style.width = (n / 5 * 100) + "%";
+  }
+  render();
+
+  /* ---------- checklist with progress ---------- */
+  var KEY = "abacus-guide-checks";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("input[type=checkbox][data-check]"));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ saved = {}; }
+
+  boxes.forEach(function(b){
+    if(saved[b.getAttribute("data-check")]) b.checked = true;
+    b.addEventListener("change", function(){
+      saved[b.getAttribute("data-check")] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e){}
+      updateChecks(true);
+    });
+  });
+  var barEl = document.getElementById("checkBar");
+  var pctEl = document.getElementById("checkPct");
+  var lblEl = document.getElementById("checkLabel");
+  var celebrated = false;
+
+  function updateChecks(mayCelebrate){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var pct = boxes.length ? Math.round(done / boxes.length * 100) : 0;
+    boxes.forEach(function(b){ b.parentNode.classList.toggle("done", b.checked); });
+    barEl.style.width = pct + "%";
+    pctEl.textContent = pct + "%";
+    lblEl.textContent = done + " of " + boxes.length + " done";
+    if(pct === 100 && !celebrated && mayCelebrate){
+      celebrated = true;
+      confetti();
+    }
+    if(pct < 100) celebrated = false;
+  }
+  updateChecks(false);
+
+  document.getElementById("resetChecks").addEventListener("click", function(){
+    boxes.forEach(function(b){ b.checked = false; saved[b.getAttribute("data-check")] = false; });
+    try { localStorage.removeItem(KEY); } catch(e){}
+    celebrated = false;
+    updateChecks(false);
+  });
+
+  /* ---------- confetti ---------- */
+  function confetti(){
+    if(reduce) return;
+    var cv = document.getElementById("confetti");
+    var ctx = cv.getContext("2d");
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = window.innerWidth * dpr;
+    cv.height = window.innerHeight * dpr;
+    ctx.scale(dpr, dpr);
+    var colors = ["#2f6df6","#12a06a","#e0a012","#6ea8ff","#f26d6d","#8b5cf6"];
+    var parts = [];
+    for(var i = 0; i < 140; i++){
+      parts.push({
+        x: Math.random() * window.innerWidth,
+        y: -20 - Math.random() * window.innerHeight * 0.4,
+        w: 6 + Math.random() * 7,
+        h: 4 + Math.random() * 6,
+        vy: 2 + Math.random() * 3.4,
+        vx: -1.1 + Math.random() * 2.2,
+        rot: Math.random() * Math.PI,
+        vr: -0.14 + Math.random() * 0.28,
+        c: colors[(Math.random() * colors.length) | 0]
+      });
+    }
+    var start = performance.now();
+    (function frame(now){
+      var t = now - start;
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      parts.forEach(function(p){
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.globalAlpha = Math.max(0, 1 - t / 2600);
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      if(t < 2600) requestAnimationFrame(frame);
+      else ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    })(start);
+  }
+})();
+</script>
+</body>
+</html>
